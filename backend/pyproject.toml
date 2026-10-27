@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sports-club-api"
+version = "1.0.0"
+description = "Backend of the sports club information system"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = ["alembic/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "C4", "SIM"]
+ignore = [
+    "B008",   # Depends() в аргументах FastAPI — стандартный паттерн
+    "UP042",  # str + Enum читаемее и совместимее для доменных перечислений
+    "UP046",  # Generic[T] поддерживается Pydantic лучше, чем PEP 695
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+pythonpath = ["."]
