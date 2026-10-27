@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  ArrowRight,
   ArrowUpRight,
   CalendarDays,
   CheckCircle2,
@@ -9,6 +10,7 @@ import {
   Users,
   Wallet,
 } from '@lucide/vue'
+import { RouterLink } from 'vue-router'
 
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:8000/api/v1'
 const apiRoot = apiUrl.replace(/\/api\/v1\/?$/, '')
@@ -47,9 +49,9 @@ const features = [
 ]
 
 const nextSteps = [
-  'F1 — layout и API-клиент',
   'F2 — авторизация и защищённые маршруты',
   'F3 — адаптивный UI-кит',
+  'F4 — расписание и запись',
 ]
 </script>
 
@@ -72,7 +74,7 @@ const nextSteps = [
         <span
           class="shrink-0 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700"
         >
-          F0 · каркас
+          F1 · каркас приложения
         </span>
       </div>
     </header>
@@ -92,7 +94,7 @@ const nextSteps = [
           </h1>
           <p class="mt-4 max-w-2xl text-base leading-7 text-slate-600">
             Клиенты, тренеры, абонементы, расписание, посещаемость и платежи — единая панель для
-            трёх ролей. Сейчас готов каркас фронтенда, дальше — layout, авторизация и экраны.
+            трёх ролей. Каркас и навигация готовы, дальше — авторизация и рабочие экраны.
           </p>
 
           <div class="mt-6 flex flex-wrap gap-2">
@@ -106,8 +108,15 @@ const nextSteps = [
           </div>
 
           <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <a
+            <RouterLink
+              to="/app"
               class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700"
+            >
+              Открыть панель
+              <ArrowRight :size="16" aria-hidden="true" />
+            </RouterLink>
+            <a
+              class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
               :href="`${apiRoot}/docs`"
               target="_blank"
               rel="noreferrer"
@@ -116,7 +125,7 @@ const nextSteps = [
               <ArrowUpRight :size="16" aria-hidden="true" />
             </a>
             <a
-              class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+              class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
               href="https://github.com/chomax21/diplom-sport-club/blob/main/ROADMAP.md"
               target="_blank"
               rel="noreferrer"
@@ -150,8 +159,8 @@ const nextSteps = [
                 <CheckCircle2 :size="20" aria-hidden="true" />
               </span>
               <div class="min-w-0">
-                <p class="text-sm font-semibold text-slate-900">Этап F0</p>
-                <p class="truncate text-xs text-slate-500">Каркас собирается</p>
+                <p class="text-sm font-semibold text-slate-900">Этап F1</p>
+                <p class="truncate text-xs text-slate-500">Layout и API-клиент</p>
               </div>
             </div>
             <ul class="mt-4 space-y-2 text-sm text-slate-600">

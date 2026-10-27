@@ -250,7 +250,12 @@ PostgreSQL. Покрыты сценарии аутентификации и ро
 │   └── requirements-dev.txt
 ├── frontend/
 │   ├── src/
-│   │   ├── router/                 # маршруты приложения
+│   │   ├── api/                    # Axios-клиент, типы, ошибки, health
+│   │   ├── app/                    # Pinia и QueryClient
+│   │   ├── components/             # layout и feedback-компоненты
+│   │   ├── composables/            # общие composables
+│   │   ├── router/                 # маршруты и навигация
+│   │   ├── stores/                 # Pinia stores
 │   │   ├── views/                  # страницы
 │   │   └── assets/                 # Tailwind и дизайн-токены
 │   ├── .env.example                # VITE_API_URL
@@ -273,9 +278,10 @@ PostgreSQL. Покрыты сценарии аутентификации и ро
 
 ## Frontend
 
-Адаптивный SPA на Vue 3 + TypeScript + Vite. Сейчас завершён этап F0:
-каркас, Tailwind CSS, роутер, Pinia и зависимости; экраны появятся
-на следующих этапах.
+Адаптивный SPA на Vue 3 + TypeScript + Vite. Сейчас завершён этап F1:
+layout, навигация, API-клиент, TanStack Query, toast-уведомления, error
+boundary и индикатор доступности API. Авторизация и рабочие экраны появятся
+на этапах F2–F7.
 
 ```bash
 cd frontend

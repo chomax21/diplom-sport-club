@@ -12,6 +12,7 @@
 - VeeValidate + Zod
 - Chart.js + vue-chartjs
 - Vitest + Vue Testing Library
+- Playwright для проверки адаптивности и сценариев
 
 ## Запуск
 
@@ -24,6 +25,18 @@ npm run dev
 Приложение откроется на http://localhost:5173. По умолчанию API доступен на
 `http://localhost:8000/api/v1`; если `.env` не создан, используется это же
 значение.
+
+## Что уже реализовано
+
+- Адаптивный layout: sidebar на десктопе, drawer на мобильных.
+- Header с названием раздела, профилем и индикатором доступности API.
+- Axios-клиент с базовым URL, заголовком `Authorization` и типизированными ошибками.
+- TanStack Query с глобальным обработчиком ошибок.
+- Toast-уведомления.
+- Error boundary и страница 404.
+- Проверка `GET /health` и отображение статуса API.
+
+Авторизация и рабочие экраны появятся на этапах F2–F7.
 
 ## Команды
 
@@ -38,17 +51,26 @@ npm run format       # Prettier
 npm run format:check
 ```
 
+Для проверок в браузере:
+
+```bash
+npx playwright install chromium
+```
+
 ## Структура
 
 ```text
 src/
-├── api/          # HTTP-клиент и эндпоинты
-├── components/   # UI-компоненты и layout
-├── composables/  # общие composables
-├── router/       # маршруты и guard'ы
-├── stores/       # Pinia
-├── views/        # страницы
-├── assets/       # глобальные стили и дизайн-токены
+├── api/            # клиент, типы, ошибки, health
+├── app/            # Pinia и QueryClient
+├── components/
+│   ├── feedback/   # toasts, error boundary, статус API
+│   └── layout/     # AppLayout, AppSidebar, AppHeader
+├── composables/    # общие composables
+├── router/         # маршруты, навигация и meta-типы
+├── stores/         # Pinia stores
+├── views/          # страницы и placeholder-экраны
+├── assets/         # глобальные стили и дизайн-токены
 └── main.ts
 ```
 
