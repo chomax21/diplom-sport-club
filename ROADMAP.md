@@ -364,7 +364,7 @@ dev-сервер отвечает HTTP 200, smoke-тест HomeView проход
 | 2026-10-27 | Backend | 16 тестов, ruff, README, git | `d34bb67` |
 | 2026-10-27 | F0 | Создан план разработки UI | `4052661` |
 | 2026-10-27 | F0 | Vue 3 + Vite, Tailwind, стек зависимостей, build и smoke-тест | `4191f0e` |
-| 2026-10-27 | F1 | Layout, drawer, API-клиент, TanStack Query, toasts, 404, health | будет указан |
+| 2026-10-27 | F1 | Layout, drawer, API-клиент, TanStack Query, toasts, 404, health | `e068b59` |
 
 Новые записи добавлять сверху или снизу таблицы в хронологическом порядке.
 В колонке «Коммит» указывать короткий hash после push.
