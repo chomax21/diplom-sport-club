@@ -21,11 +21,16 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => user.value !== null)
   const role = computed<UserRole | null>(() => user.value?.role ?? null)
 
+  function purgeQueries(): void {
+    void queryClient.cancelQueries()
+    queryClient.clear()
+  }
+
   function resetSession(): void {
     clearTokens()
     user.value = null
     status.value = 'guest'
-    queryClient.clear()
+    purgeQueries()
   }
 
   onSessionExpired(() => {
@@ -33,7 +38,6 @@ export const useAuthStore = defineStore('auth', () => {
     status.value = 'guest'
     initialized.value = true
     sessionExpired.value = true
-    queryClient.clear()
   })
 
   async function restoreSession(): Promise<void> {
@@ -105,7 +109,9 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function logout(): void {
-    resetSession()
+    clearTokens()
+    user.value = null
+    status.value = 'guest'
     initialized.value = true
     sessionExpired.value = false
   }
@@ -129,6 +135,7 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     register,
     logout,
+    purgeQueries,
     hasRole,
     acknowledgeSessionExpired,
   }

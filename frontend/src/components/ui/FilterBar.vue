@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { ChevronDown, SlidersHorizontal } from '@lucide/vue'
-import { ref, useId } from 'vue'
+import { computed, ref, useId } from 'vue'
 
 import AppBadge from './AppBadge.vue'
 import AppButton from './AppButton.vue'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     activeCount?: number
     hasActiveFilters?: boolean
+    columns?: 2 | 3 | 4
   }>(),
   {
     activeCount: 0,
     hasActiveFilters: false,
+    columns: 4,
   },
 )
 
@@ -22,6 +24,16 @@ const emit = defineEmits<{
 
 const open = ref(false)
 const panelId = `filters-${useId()}`
+
+const gridClasses = computed(() => {
+  if (props.columns === 2) {
+    return 'lg:grid-cols-2'
+  }
+  if (props.columns === 3) {
+    return 'lg:grid-cols-3'
+  }
+  return 'lg:grid-cols-4'
+})
 </script>
 
 <template>
@@ -60,7 +72,7 @@ const panelId = `filters-${useId()}`
 
     <div
       :id="panelId"
-      :class="['mt-3 gap-3 sm:grid-cols-2 lg:grid-cols-4', open ? 'grid' : 'hidden md:grid']"
+      :class="['mt-3 gap-3 sm:grid-cols-2', gridClasses, open ? 'grid' : 'hidden md:grid']"
     >
       <slot />
     </div>

@@ -24,12 +24,24 @@ watch(
     auth.acknowledgeSessionExpired()
 
     if (!shouldRedirect) {
+      auth.purgeQueries()
       return
     }
 
     await router.replace({ name: 'login', query: { redirect } })
+    auth.purgeQueries()
     toast.warning('Срок действия сессии истёк. Войдите снова.', 'Требуется вход')
   },
+)
+
+watch(
+  () => route.name,
+  (name) => {
+    if (name === 'login' && !auth.isAuthenticated) {
+      auth.purgeQueries()
+    }
+  },
+  { flush: 'post' },
 )
 </script>
 

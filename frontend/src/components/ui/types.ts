@@ -1,3 +1,5 @@
+export type BadgeTone = 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'info' | 'violet'
+
 export interface SelectOption {
   label: string
   value: string | number

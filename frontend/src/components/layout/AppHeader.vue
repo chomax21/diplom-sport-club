@@ -65,7 +65,7 @@ async function logout(): Promise<void> {
           >
             {{ initials }}
           </span>
-          <span class="hidden max-w-40 truncate sm:inline">{{
+          <span class="hidden max-w-40 truncate sm:inline lg:max-w-52">{{
             auth.user?.full_name ?? 'Профиль'
           }}</span>
           <ChevronDown :size="14" class="hidden text-slate-400 sm:block" aria-hidden="true" />

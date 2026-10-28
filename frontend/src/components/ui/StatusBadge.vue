@@ -2,8 +2,8 @@
 import { computed } from 'vue'
 
 import AppBadge from './AppBadge.vue'
+import type { BadgeTone } from './types'
 
-type BadgeTone = 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'info' | 'violet'
 type StatusKind = 'membership' | 'enrollment' | 'payment' | 'role'
 
 interface StatusMeta {

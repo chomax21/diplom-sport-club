@@ -2,8 +2,7 @@
 import { computed } from 'vue'
 
 import { cn } from '@/lib/cn'
-
-type BadgeTone = 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'info' | 'violet'
+import type { BadgeTone } from './types'
 
 const props = withDefaults(
   defineProps<{

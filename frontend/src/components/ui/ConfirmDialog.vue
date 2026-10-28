@@ -14,6 +14,7 @@ withDefaults(
     cancelLabel?: string
     tone?: 'danger' | 'primary'
     loading?: boolean
+    error?: string | null
   }>(),
   {
     title: 'Подтвердите действие',
@@ -21,6 +22,7 @@ withDefaults(
     cancelLabel: 'Отмена',
     tone: 'danger',
     loading: false,
+    error: null,
   },
 )
 
@@ -30,7 +32,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <AppModal v-model="open" :title="title" size="sm">
+  <AppModal v-model="open" :title="title" size="sm" :prevent-close="loading">
     <div class="flex items-start gap-3">
       <span
         :class="[
@@ -41,7 +43,16 @@ const emit = defineEmits<{
       >
         <TriangleAlert :size="21" />
       </span>
-      <p class="pt-0.5 text-sm leading-6 text-slate-600">{{ message }}</p>
+      <div class="min-w-0 pt-0.5">
+        <p class="text-sm leading-6 text-slate-600">{{ message }}</p>
+        <p
+          v-if="error"
+          class="mt-3 rounded-xl border border-rose-200 bg-rose-50 p-2.5 text-xs leading-5 text-rose-700"
+          role="alert"
+        >
+          {{ error }}
+        </p>
+      </div>
     </div>
 
     <template #footer>

@@ -67,11 +67,19 @@ const router = createRouter({
         {
           path: 'schedule',
           name: 'schedule',
-          component: PlaceholderView,
+          component: () => import('@/views/app/ScheduleView.vue'),
           meta: {
             title: 'Расписание',
             description: 'Групповые тренировки, фильтры по дате, залу и тренеру, запись клиентов.',
-            stage: 'F4',
+          },
+        },
+        {
+          path: 'schedule/:id',
+          name: 'session-detail',
+          component: () => import('@/views/app/SessionDetailView.vue'),
+          meta: {
+            title: 'Тренировка',
+            description: 'Детали тренировки, запись и посещаемость.',
           },
         },
         {
