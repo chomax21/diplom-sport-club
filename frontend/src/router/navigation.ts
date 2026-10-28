@@ -11,11 +11,14 @@ import {
 } from '@lucide/vue'
 import type { Component } from 'vue'
 
+import type { UserRole } from '@/api/types'
+
 export interface NavItem {
   label: string
   to: string
   icon: Component
   exact?: boolean
+  roles?: UserRole[]
 }
 
 export interface NavSection {
@@ -47,26 +50,31 @@ export const navigation: NavSection[] = [
         label: 'Клиенты',
         to: '/app/clients',
         icon: Users,
+        roles: ['admin', 'trainer'],
       },
       {
         label: 'Тренеры',
         to: '/app/trainers',
         icon: Dumbbell,
+        roles: ['admin'],
       },
       {
         label: 'Залы',
         to: '/app/rooms',
         icon: Building,
+        roles: ['admin'],
       },
       {
         label: 'Абонементы',
         to: '/app/memberships',
         icon: CreditCard,
+        roles: ['admin', 'client'],
       },
       {
         label: 'Платежи',
         to: '/app/payments',
         icon: Wallet,
+        roles: ['admin', 'client'],
       },
     ],
   },
@@ -77,11 +85,13 @@ export const navigation: NavSection[] = [
         label: 'Пользователи',
         to: '/app/users',
         icon: UserCog,
+        roles: ['admin'],
       },
       {
         label: 'Отчёты',
         to: '/app/reports',
         icon: ChartColumn,
+        roles: ['admin', 'trainer'],
       },
     ],
   },

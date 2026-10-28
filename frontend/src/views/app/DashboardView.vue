@@ -6,17 +6,36 @@ import {
   CheckCircle2,
   CreditCard,
   RefreshCw,
+  UserCog,
   Users,
   Wallet,
 } from '@lucide/vue'
+import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 
+import type { UserRole } from '@/api/types'
 import ApiStatusBadge from '@/components/feedback/ApiStatusBadge.vue'
 import { useHealthQuery } from '@/composables/useHealthQuery'
-import { useToastStore } from '@/stores/toasts'
+import { ROLE_BADGE_CLASSES, roleDescription, roleLabel } from '@/lib/roles'
+import { useAuthStore } from '@/stores/auth'
 
+const auth = useAuthStore()
 const { data, isFetching, refetch } = useHealthQuery()
-const toast = useToastStore()
+
+const firstName = computed(() => auth.user?.full_name.trim().split(/\s+/)[0] ?? 'коллега')
+const roleBadgeClass = computed(() =>
+  auth.role ? ROLE_BADGE_CLASSES[auth.role] : 'bg-slate-100 text-slate-600',
+)
+
+const dashboardDescription = computed(() => {
+  const descriptions: Record<UserRole, string> = {
+    admin: 'Полный обзор клуба: расписание, клиенты, абонементы, платежи и отчёты.',
+    trainer: 'Ваши тренировки, список клиентов и отчёты по посещаемости.',
+    client: 'Расписание, действующий абонемент и история платежей.',
+  }
+
+  return auth.role ? descriptions[auth.role] : 'Обзор информационной системы клуба.'
+})
 
 const metrics = [
   {
@@ -49,7 +68,15 @@ const metrics = [
   },
 ]
 
-const quickLinks = [
+interface QuickLink {
+  to: string
+  title: string
+  text: string
+  icon: typeof CalendarDays
+  roles?: UserRole[]
+}
+
+const quickLinks: QuickLink[] = [
   {
     to: '/app/schedule',
     title: 'Расписание',
@@ -61,57 +88,93 @@ const quickLinks = [
     title: 'Клиенты',
     text: 'Профили и абонементы',
     icon: Users,
+    roles: ['admin', 'trainer'],
+  },
+  {
+    to: '/app/memberships',
+    title: 'Абонементы',
+    text: 'Виды, оформление и отмена',
+    icon: CreditCard,
+    roles: ['admin', 'client'],
   },
   {
     to: '/app/payments',
     title: 'Платежи',
     text: 'История и возвраты',
     icon: Wallet,
+    roles: ['admin', 'client'],
+  },
+  {
+    to: '/app/users',
+    title: 'Пользователи',
+    text: 'Учётные записи и роли',
+    icon: UserCog,
+    roles: ['admin'],
   },
   {
     to: '/app/reports',
     title: 'Отчёты',
     text: 'Посещаемость и выручка',
     icon: ChartColumn,
+    roles: ['admin', 'trainer'],
   },
 ]
 
-const stageItems = [
-  'Адаптивный layout: sidebar и drawer',
-  'Axios-клиент с типами и ошибками',
-  'TanStack Query и глобальные уведомления',
-  'Error boundary и страница 404',
-  'Индикатор доступности API',
-]
+const visibleQuickLinks = computed(() => quickLinks.filter((link) => auth.hasRole(link.roles)))
 
-function showToast(): void {
-  toast.info(
-    'Уведомления работают. Ошибки API будут появляться здесь автоматически.',
-    'Проверка UI',
-  )
-}
+const stageItems = [
+  'Вход и регистрация клиента',
+  'Access в памяти, refresh в localStorage',
+  'Автообновление токена при 401 (single-flight)',
+  'Защищённые маршруты и ролевые guard’ы',
+  'Меню по роли и страница 403',
+  'Восстановление сессии после перезагрузки',
+]
 </script>
 
 <template>
   <div class="space-y-6">
     <section class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div class="min-w-0">
-        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-700">Этап F1</p>
-        <h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-          Обзор клуба
-        </h2>
+        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-700">
+          F2 · доступ и роли
+        </p>
+        <div class="mt-1 flex flex-wrap items-center gap-2.5">
+          <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            Здравствуйте, {{ firstName }}
+          </h2>
+          <span
+            :class="[
+              'inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold',
+              roleBadgeClass,
+            ]"
+          >
+            {{ roleLabel(auth.role) }}
+          </span>
+        </div>
         <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-          Каркас приложения готов: навигация, API-клиент и обработка ошибок. Реальные данные
-          появятся на следующих этапах.
+          {{ dashboardDescription }}
         </p>
       </div>
-      <button
-        type="button"
+      <RouterLink
+        to="/app/profile"
         class="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-        @click="showToast"
       >
-        Проверить уведомления
-      </button>
+        Мой профиль
+        <ArrowRight :size="15" aria-hidden="true" />
+      </RouterLink>
+    </section>
+
+    <section
+      class="flex flex-col gap-3 rounded-2xl border border-brand-100 bg-brand-50/70 p-4 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <div class="min-w-0">
+        <p class="text-sm font-semibold text-brand-800">Доступ по роли</p>
+        <p class="mt-1 text-xs leading-5 text-brand-800/80">{{ roleDescription(auth.role) }}.</p>
+      </div>
+      <span class="shrink-0 text-xs font-medium text-brand-700">
+        {{ auth.user?.email }}
+      </span>
     </section>
 
     <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -138,16 +201,16 @@ function showToast(): void {
         <div class="flex flex-wrap items-end justify-between gap-2">
           <div>
             <h3 class="text-lg font-semibold text-slate-900">Быстрый доступ</h3>
-            <p class="mt-1 text-sm text-slate-500">Основные разделы клуба</p>
+            <p class="mt-1 text-sm text-slate-500">Разделы, доступные вашей роли</p>
           </div>
           <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
-            9 разделов
+            {{ visibleQuickLinks.length }}
           </span>
         </div>
 
         <div class="mt-5 grid gap-3 sm:grid-cols-2">
           <RouterLink
-            v-for="link in quickLinks"
+            v-for="link in visibleQuickLinks"
             :key="link.to"
             :to="link.to"
             class="group flex min-h-24 items-start gap-3 rounded-2xl border border-slate-200 p-4 transition hover:border-brand-200 hover:bg-brand-50/40"
@@ -209,7 +272,7 @@ function showToast(): void {
         </section>
 
         <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h3 class="text-sm font-semibold text-slate-900">Готово в F1</h3>
+          <h3 class="text-sm font-semibold text-slate-900">Готово в F2</h3>
           <ul class="mt-4 space-y-2.5">
             <li
               v-for="item in stageItems"

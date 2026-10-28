@@ -250,13 +250,14 @@ PostgreSQL. Покрыты сценарии аутентификации и ро
 │   └── requirements-dev.txt
 ├── frontend/
 │   ├── src/
-│   │   ├── api/                    # Axios-клиент, типы, ошибки, health
+│   │   ├── api/                    # Axios-клиент, auth, сессия, типы, ошибки, health
 │   │   ├── app/                    # Pinia и QueryClient
-│   │   ├── components/             # layout и feedback-компоненты
+│   │   ├── components/             # layout, auth-shell и feedback-компоненты
 │   │   ├── composables/            # общие composables
-│   │   ├── router/                 # маршруты и навигация
-│   │   ├── stores/                 # Pinia stores
-│   │   ├── views/                  # страницы
+│   │   ├── lib/                    # роли, права и утилиты
+│   │   ├── router/                 # маршруты, навигация, meta и guard'ы
+│   │   ├── stores/                 # Pinia: auth и toasts
+│   │   ├── views/                  # landing, вход, регистрация, 403, страницы панели
 │   │   └── assets/                 # Tailwind и дизайн-токены
 │   ├── .env.example                # VITE_API_URL
 │   ├── README.md
@@ -278,10 +279,13 @@ PostgreSQL. Покрыты сценарии аутентификации и ро
 
 ## Frontend
 
-Адаптивный SPA на Vue 3 + TypeScript + Vite. Сейчас завершён этап F1:
-layout, навигация, API-клиент, TanStack Query, toast-уведомления, error
-boundary и индикатор доступности API. Авторизация и рабочие экраны появятся
-на этапах F2–F7.
+Адаптивный SPA на Vue 3 + TypeScript + Vite. Завершены этапы F0–F2:
+layout и навигация, API-клиент с обработкой ошибок, TanStack Query,
+toast-уведомления, вход и регистрация, восстановление сессии, автоматическое
+обновление токена и ролевые guard'ы. Рабочие экраны появятся на этапах F3–F7.
+
+После запуска доступны демо-аккаунты из раздела «Демо-данные»; меню и
+маршруты автоматически ограничиваются ролью пользователя.
 
 ```bash
 cd frontend

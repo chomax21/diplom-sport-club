@@ -14,7 +14,8 @@ describe('HomeView', () => {
     })
 
     expect(screen.getByRole('heading', { name: /адаптивный интерфейс/i })).toBeTruthy()
-    expect(screen.getByText('Открыть панель')).toBeTruthy()
+    expect(screen.getByText('Войти в панель')).toBeTruthy()
+    expect(screen.getByText('Создать аккаунт')).toBeTruthy()
     expect(screen.getByText('http://localhost:8000/api/v1')).toBeTruthy()
   })
 })

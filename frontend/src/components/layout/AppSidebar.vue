@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { Dumbbell, LogIn, UserRound } from '@lucide/vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { Dumbbell, LogOut, Settings2 } from '@lucide/vue'
+import { computed } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 
+import { ROLE_BADGE_CLASSES, roleLabel, userInitials } from '@/lib/roles'
 import { navigation, type NavItem } from '@/router/navigation'
-
-const route = useRoute()
+import { useAuthStore } from '@/stores/auth'
+import { useToastStore } from '@/stores/toasts'
 
 withDefaults(
   defineProps<{
@@ -15,12 +17,37 @@ withDefaults(
   },
 )
 
+const auth = useAuthStore()
+const toast = useToastStore()
+const route = useRoute()
+const router = useRouter()
+
+const visibleNavigation = computed(() =>
+  navigation
+    .map((section) => ({
+      ...section,
+      items: section.items.filter((item) => auth.hasRole(item.roles)),
+    }))
+    .filter((section) => section.items.length > 0),
+)
+
+const initials = computed(() => userInitials(auth.user?.full_name))
+const roleBadgeClass = computed(() =>
+  auth.role ? ROLE_BADGE_CLASSES[auth.role] : 'bg-slate-100 text-slate-600',
+)
+
 function isActive(item: NavItem): boolean {
   if (item.exact) {
     return route.path === item.to
   }
 
   return route.path === item.to || route.path.startsWith(`${item.to}/`)
+}
+
+async function logout(): Promise<void> {
+  auth.logout()
+  toast.info('Сессия завершена.', 'Вы вышли из аккаунта')
+  await router.replace({ name: 'login' })
 }
 </script>
 
@@ -32,7 +59,7 @@ function isActive(item: NavItem): boolean {
         mobile ? 'pl-4 pr-14' : 'px-4',
       ]"
     >
-      <RouterLink to="/" class="flex min-w-0 items-center gap-3" aria-label="На главную страницу">
+      <RouterLink to="/app" class="flex min-w-0 items-center gap-3" aria-label="На дашборд">
         <span
           class="grid size-9 shrink-0 place-items-center rounded-xl bg-brand-600 text-white shadow-lg shadow-brand-600/20"
         >
@@ -48,7 +75,7 @@ function isActive(item: NavItem): boolean {
     </div>
 
     <nav class="flex-1 overflow-y-auto px-3 py-4" aria-label="Основная навигация">
-      <div v-for="section in navigation" :key="section.title" class="mb-5 last:mb-0">
+      <div v-for="section in visibleNavigation" :key="section.title" class="mb-5 last:mb-0">
         <p class="px-3 pb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
           {{ section.title }}
         </p>
@@ -78,26 +105,40 @@ function isActive(item: NavItem): boolean {
     </nav>
 
     <div class="border-t border-slate-200 p-3">
-      <div class="rounded-2xl bg-slate-50 p-3">
-        <div class="flex items-center gap-3">
-          <span
-            class="grid size-9 shrink-0 place-items-center rounded-full bg-slate-200 text-slate-600"
-          >
-            <UserRound :size="18" aria-hidden="true" />
-          </span>
-          <div class="min-w-0">
-            <p class="truncate text-sm font-medium text-slate-900">Гость</p>
-            <p class="truncate text-xs text-slate-500">Авторизация — этап F2</p>
-          </div>
-        </div>
-        <RouterLink
-          to="/"
-          class="mt-3 inline-flex min-h-9 w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-100"
+      <RouterLink
+        to="/app/profile"
+        class="flex min-h-11 items-center gap-3 rounded-2xl bg-slate-50 p-3 transition hover:bg-slate-100"
+        aria-label="Открыть профиль"
+      >
+        <span
+          class="grid size-9 shrink-0 place-items-center rounded-full bg-white text-xs font-bold text-brand-700 shadow-sm"
         >
-          <LogIn :size="14" aria-hidden="true" />
-          На главную
-        </RouterLink>
-      </div>
+          {{ initials }}
+        </span>
+        <span class="min-w-0 flex-1">
+          <span class="block truncate text-sm font-medium text-slate-900">
+            {{ auth.user?.full_name ?? 'Пользователь' }}
+          </span>
+          <span
+            :class="[
+              'mt-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold',
+              roleBadgeClass,
+            ]"
+          >
+            {{ roleLabel(auth.role) }}
+          </span>
+        </span>
+        <Settings2 :size="15" class="shrink-0 text-slate-400" aria-hidden="true" />
+      </RouterLink>
+
+      <button
+        type="button"
+        class="mt-2 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700"
+        @click="logout"
+      >
+        <LogOut :size="14" aria-hidden="true" />
+        Выйти из аккаунта
+      </button>
     </div>
   </div>
 </template>

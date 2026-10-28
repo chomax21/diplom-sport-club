@@ -1,12 +1,21 @@
-import axios, { type AxiosInstance } from 'axios'
+import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from 'axios'
 
 import { getAccessToken } from './authToken'
+import { API_BASE_URL, API_ROOT_URL } from './config'
 import { ApiError } from './errors'
+import { refreshAccessToken } from './session'
 
-const configuredUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:8000/api/v1'
+interface RetryableRequestConfig extends InternalAxiosRequestConfig {
+  _authRetried?: boolean
+}
 
-export const API_BASE_URL = configuredUrl.replace(/\/+$/, '')
-export const API_ROOT_URL = API_BASE_URL.replace(/\/api\/v1$/, '')
+function isAuthEndpoint(url: string | undefined): boolean {
+  if (!url) {
+    return false
+  }
+
+  return /\/auth\/(login|token|register|refresh)(?:\?|$)/.test(url)
+}
 
 function createHttpClient(baseURL: string, timeout: number): AxiosInstance {
   const client = axios.create({
@@ -27,7 +36,28 @@ function createHttpClient(baseURL: string, timeout: number): AxiosInstance {
 
   client.interceptors.response.use(
     (response) => response,
-    (error: unknown) => Promise.reject(ApiError.from(error)),
+    async (error: unknown) => {
+      if (axios.isAxiosError(error)) {
+        const config = error.config as RetryableRequestConfig | undefined
+        const shouldRefresh =
+          error.response?.status === 401 &&
+          config !== undefined &&
+          config._authRetried !== true &&
+          !isAuthEndpoint(config.url)
+
+        if (shouldRefresh) {
+          config._authRetried = true
+          const token = await refreshAccessToken()
+
+          if (token) {
+            config.headers.set('Authorization', `Bearer ${token}`)
+            return client.request(config)
+          }
+        }
+      }
+
+      return Promise.reject(ApiError.from(error))
+    },
   )
 
   return client

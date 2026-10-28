@@ -1,10 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import AppLayout from '@/components/layout/AppLayout.vue'
+import ForbiddenView from '@/views/ForbiddenView.vue'
 import HomeView from '@/views/HomeView.vue'
+import LoginView from '@/views/LoginView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
+import RegisterView from '@/views/RegisterView.vue'
 import DashboardView from '@/views/app/DashboardView.vue'
 import PlaceholderView from '@/views/app/PlaceholderView.vue'
+import ProfileView from '@/views/app/ProfileView.vue'
+import { installAuthGuards } from './guards'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,8 +23,37 @@ const router = createRouter({
       },
     },
     {
+      path: '/login',
+      name: 'login',
+      component: LoginView,
+      meta: {
+        title: 'Вход',
+        guestOnly: true,
+      },
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView,
+      meta: {
+        title: 'Регистрация',
+        guestOnly: true,
+      },
+    },
+    {
+      path: '/forbidden',
+      name: 'forbidden',
+      component: ForbiddenView,
+      meta: {
+        title: 'Нет доступа',
+      },
+    },
+    {
       path: '/app',
       component: AppLayout,
+      meta: {
+        requiresAuth: true,
+      },
       children: [
         {
           path: '',
@@ -48,6 +82,7 @@ const router = createRouter({
             title: 'Клиенты',
             description: 'Список клиентов, профили, поиск и редактирование данных.',
             stage: 'F6',
+            roles: ['admin', 'trainer'],
           },
         },
         {
@@ -58,6 +93,7 @@ const router = createRouter({
             title: 'Тренеры',
             description: 'Профили тренеров, специализация и управление расписанием.',
             stage: 'F6',
+            roles: ['admin'],
           },
         },
         {
@@ -68,6 +104,7 @@ const router = createRouter({
             title: 'Залы',
             description: 'Помещения клуба, вместимость и доступность для тренировок.',
             stage: 'F6',
+            roles: ['admin'],
           },
         },
         {
@@ -78,6 +115,7 @@ const router = createRouter({
             title: 'Абонементы',
             description: 'Виды абонементов, оформление, продление и отмена.',
             stage: 'F5',
+            roles: ['admin', 'client'],
           },
         },
         {
@@ -88,6 +126,7 @@ const router = createRouter({
             title: 'Платежи',
             description: 'История платежей, статусы, возвраты и детали операций.',
             stage: 'F5',
+            roles: ['admin', 'client'],
           },
         },
         {
@@ -98,6 +137,7 @@ const router = createRouter({
             title: 'Пользователи',
             description: 'Учётные записи, роли и блокировка доступа.',
             stage: 'F6',
+            roles: ['admin'],
           },
         },
         {
@@ -108,16 +148,16 @@ const router = createRouter({
             title: 'Отчёты',
             description: 'Посещаемость, выручка и сводная статистика клуба.',
             stage: 'F7',
+            roles: ['admin', 'trainer'],
           },
         },
         {
           path: 'profile',
           name: 'profile',
-          component: PlaceholderView,
+          component: ProfileView,
           meta: {
             title: 'Профиль',
             description: 'Личные данные, контакты и настройки учётной записи.',
-            stage: 'F2',
           },
         },
       ],
@@ -133,6 +173,8 @@ const router = createRouter({
   ],
   scrollBehavior: () => ({ top: 0 }),
 })
+
+installAuthGuards(router)
 
 router.afterEach((to) => {
   document.title = to.meta.title ? `${to.meta.title} — СпортКлуб` : 'СпортКлуб'

@@ -1,19 +1,35 @@
 <script setup lang="ts">
 import { Menu as HeadlessMenu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
-import { ChevronDown, LogIn, Menu as MenuIcon, UserRound } from '@lucide/vue'
+import { ChevronDown, LogOut, Menu as MenuIcon, UserRound } from '@lucide/vue'
 import { computed } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 
 import ApiStatusBadge from '@/components/feedback/ApiStatusBadge.vue'
+import { ROLE_BADGE_CLASSES, roleLabel, userInitials } from '@/lib/roles'
+import { useAuthStore } from '@/stores/auth'
+import { useToastStore } from '@/stores/toasts'
 
 const emit = defineEmits<{
   openMenu: []
 }>()
 
+const auth = useAuthStore()
+const toast = useToastStore()
 const route = useRoute()
+const router = useRouter()
 
 const title = computed(() => route.meta.title ?? 'Панель управления')
 const description = computed(() => route.meta.description ?? '')
+const initials = computed(() => userInitials(auth.user?.full_name))
+const roleBadgeClass = computed(() =>
+  auth.role ? ROLE_BADGE_CLASSES[auth.role] : 'bg-slate-100 text-slate-600',
+)
+
+async function logout(): Promise<void> {
+  auth.logout()
+  toast.info('Сессия завершена.', 'Вы вышли из аккаунта')
+  await router.replace({ name: 'login' })
+}
 </script>
 
 <template>
@@ -35,17 +51,21 @@ const description = computed(() => route.meta.description ?? '')
         </p>
       </div>
 
-      <ApiStatusBadge />
+      <ApiStatusBadge class="hidden sm:inline-flex" />
 
       <HeadlessMenu as="div" class="relative shrink-0">
         <MenuButton
           class="flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-2 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           aria-label="Меню профиля"
         >
-          <span class="grid size-7 place-items-center rounded-full bg-slate-100 text-slate-600">
-            <UserRound :size="16" aria-hidden="true" />
+          <span
+            class="grid size-7 shrink-0 place-items-center rounded-full bg-brand-50 text-[11px] font-bold text-brand-700"
+          >
+            {{ initials }}
           </span>
-          <span class="hidden sm:inline">Гость</span>
+          <span class="hidden max-w-32 truncate sm:inline">{{
+            auth.user?.full_name ?? 'Профиль'
+          }}</span>
           <ChevronDown :size="14" class="hidden text-slate-400 sm:block" aria-hidden="true" />
         </MenuButton>
 
@@ -58,16 +78,26 @@ const description = computed(() => route.meta.description ?? '')
           leave-to-class="scale-95 opacity-0"
         >
           <MenuItems
-            class="absolute right-0 mt-2 w-56 origin-top-right rounded-2xl border border-slate-200 bg-white p-1.5 shadow-card focus:outline-none"
+            class="absolute right-0 mt-2 w-64 origin-top-right rounded-2xl border border-slate-200 bg-white p-1.5 shadow-card focus:outline-none"
           >
-            <div class="px-3 py-2 text-xs leading-5 text-slate-500">
-              Авторизация появится на этапе F2
+            <div v-if="auth.user" class="border-b border-slate-100 px-3 py-2.5">
+              <p class="truncate text-sm font-semibold text-slate-900">{{ auth.user.full_name }}</p>
+              <p class="mt-0.5 truncate text-xs text-slate-500">{{ auth.user.email }}</p>
+              <span
+                :class="[
+                  'mt-2 inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold',
+                  roleBadgeClass,
+                ]"
+              >
+                {{ roleLabel(auth.role) }}
+              </span>
             </div>
+
             <MenuItem v-slot="{ active }">
               <RouterLink
                 to="/app/profile"
                 :class="[
-                  'flex min-h-10 items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700',
+                  'mt-1 flex min-h-10 items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700',
                   active ? 'bg-slate-100' : '',
                 ]"
               >
@@ -75,17 +105,19 @@ const description = computed(() => route.meta.description ?? '')
                 Профиль
               </RouterLink>
             </MenuItem>
+
             <MenuItem v-slot="{ active }">
-              <RouterLink
-                to="/"
+              <button
+                type="button"
                 :class="[
-                  'flex min-h-10 items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700',
-                  active ? 'bg-slate-100' : '',
+                  'flex min-h-10 w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-rose-600',
+                  active ? 'bg-rose-50' : '',
                 ]"
+                @click="logout"
               >
-                <LogIn :size="16" aria-hidden="true" />
-                На главную
-              </RouterLink>
+                <LogOut :size="16" aria-hidden="true" />
+                Выйти
+              </button>
             </MenuItem>
           </MenuItems>
         </Transition>

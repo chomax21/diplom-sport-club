@@ -29,14 +29,19 @@ npm run dev
 ## Что уже реализовано
 
 - Адаптивный layout: sidebar на десктопе, drawer на мобильных.
-- Header с названием раздела, профилем и индикатором доступности API.
+- Header с названием раздела, профилем пользователя и индикатором доступности API.
+- Страницы входа и регистрации с валидацией VeeValidate + Zod.
+- Хранение access-токена в памяти, refresh-токена в localStorage.
+- Восстановление сессии после перезагрузки и single-flight обновление токена при 401.
+- Защищённые маршруты, ролевые guard'ы, страница 403 и меню по роли.
+- Профиль пользователя, выход и очистка кеша TanStack Query.
 - Axios-клиент с базовым URL, заголовком `Authorization` и типизированными ошибками.
 - TanStack Query с глобальным обработчиком ошибок.
-- Toast-уведомления.
-- Error boundary и страница 404.
+- Toast-уведомления, error boundary и страница 404.
 - Проверка `GET /health` и отображение статуса API.
 
-Авторизация и рабочие экраны появятся на этапах F2–F7.
+Рабочие экраны появятся на этапах F3–F7. Демо-аккаунты для проверки ролей
+описаны в корневом [README.md](../README.md#демо-данные).
 
 ## Команды
 
@@ -61,15 +66,16 @@ npx playwright install chromium
 
 ```text
 src/
-├── api/            # клиент, типы, ошибки, health
+├── api/            # клиент, auth, сессия, типы, ошибки, health
 ├── app/            # Pinia и QueryClient
 ├── components/
 │   ├── feedback/   # toasts, error boundary, статус API
-│   └── layout/     # AppLayout, AppSidebar, AppHeader
+│   └── layout/     # AppLayout, AppSidebar, AppHeader, AuthShell
 ├── composables/    # общие composables
-├── router/         # маршруты, навигация и meta-типы
-├── stores/         # Pinia stores
-├── views/          # страницы и placeholder-экраны
+├── lib/            # роли, права и общие утилиты
+├── router/         # маршруты, meta-типы, навигация и guard'ы
+├── stores/         # Pinia: auth и toasts
+├── views/          # landing, вход, регистрация, 403, страницы панели
 ├── assets/         # глобальные стили и дизайн-токены
 └── main.ts
 ```
