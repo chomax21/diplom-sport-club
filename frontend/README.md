@@ -39,9 +39,30 @@ npm run dev
 - TanStack Query с глобальным обработчиком ошибок.
 - Toast-уведомления, error boundary и страница 404.
 - Проверка `GET /health` и отображение статуса API.
+- UI-кит из 24 компонентов: кнопки, поля, даты, модальные окна, drawer,
+  таблица с карточками на мобильных, пагинация, фильтры и состояния.
 
-Рабочие экраны появятся на этапах F3–F7. Демо-аккаунты для проверки ролей
+Рабочие экраны появятся на этапах F4–F7. Демо-аккаунты для проверки ролей
 описаны в корневом [README.md](../README.md#демо-данные).
+
+## UI-кит
+
+Компоненты находятся в `src/components/ui`, экспортируются из
+`src/components/ui/index.ts`. Реализованы `AppButton`, `IconButton`,
+`AppInput`, `AppTextarea`, `AppSelect`, `AppCheckbox`, `AppSwitch`,
+`DatePicker`, `DateRangePicker`, `AppModal`, `AppDrawer`, `ConfirmDialog`,
+`DataTable`, `AppPagination`, `SearchInput`, `FilterBar`, `AppBadge`,
+`StatusBadge`, `AppAvatar`, `AppTooltip`, `EmptyState`, `ErrorState`,
+`LoadingState` и `SkeletonBlock`.
+
+`DataTable` показывает таблицу от 768 px и карточки на меньшей ширине.
+`AppModal` и `AppDrawer` на мобильных занимают весь экран и закрываются по
+Escape. Все интерактивные элементы имеют touch-зону не меньше 44 px и
+видимый focus ring.
+
+Демонстрационная страница доступна администратору по адресу
+http://localhost:5173/app/ui-kit. Она загружается отдельным чанком и не
+попадает в основную навигацию.
 
 ## Команды
 
@@ -70,12 +91,13 @@ src/
 ├── app/            # Pinia и QueryClient
 ├── components/
 │   ├── feedback/   # toasts, error boundary, статус API
-│   └── layout/     # AppLayout, AppSidebar, AppHeader, AuthShell
+│   ├── layout/     # AppLayout, AppSidebar, AppHeader, AuthShell
+│   └── ui/         # UI-кит: кнопки, поля, таблицы, окна, состояния
 ├── composables/    # общие composables
-├── lib/            # роли, права и общие утилиты
+├── lib/            # роли, права, cn и общие утилиты
 ├── router/         # маршруты, meta-типы, навигация и guard'ы
 ├── stores/         # Pinia: auth и toasts
-├── views/          # landing, вход, регистрация, 403, страницы панели
+├── views/          # landing, вход, регистрация, 403, панель и UI-кит
 ├── assets/         # глобальные стили и дизайн-токены
 └── main.ts
 ```

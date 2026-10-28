@@ -160,6 +160,17 @@ const router = createRouter({
             description: 'Личные данные, контакты и настройки учётной записи.',
           },
         },
+        {
+          path: 'ui-kit',
+          name: 'ui-kit',
+          component: () => import('@/views/app/UiKitView.vue'),
+          meta: {
+            title: 'UI-кит',
+            description: 'Компоненты интерфейса и состояния для проверки адаптивности.',
+            stage: 'F3',
+            roles: ['admin'],
+          },
+        },
       ],
     },
     {

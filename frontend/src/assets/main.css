@@ -19,8 +19,11 @@
   --color-accent-500: #f59e0b;
   --color-accent-600: #d97706;
 
+  --radius-control: 0.75rem;
+  --radius-panel: 1rem;
   --radius-card: 1.25rem;
   --shadow-card: 0 18px 45px -24px rgb(15 23 42 / 0.35);
+  --shadow-popover: 0 20px 55px -28px rgb(15 23 42 / 0.45);
 }
 
 @layer base {

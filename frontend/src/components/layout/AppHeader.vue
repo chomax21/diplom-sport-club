@@ -51,7 +51,9 @@ async function logout(): Promise<void> {
         </p>
       </div>
 
-      <ApiStatusBadge class="hidden sm:inline-flex" />
+      <div class="hidden sm:block">
+        <ApiStatusBadge />
+      </div>
 
       <HeadlessMenu as="div" class="relative shrink-0">
         <MenuButton
@@ -63,7 +65,7 @@ async function logout(): Promise<void> {
           >
             {{ initials }}
           </span>
-          <span class="hidden max-w-32 truncate sm:inline">{{
+          <span class="hidden max-w-40 truncate sm:inline">{{
             auth.user?.full_name ?? 'Профиль'
           }}</span>
           <ChevronDown :size="14" class="hidden text-slate-400 sm:block" aria-hidden="true" />
