@@ -46,6 +46,15 @@ export function formatDateTime(value: string): string {
   return date ? format(date, 'd MMMM yyyy, HH:mm', { locale: ru }) : '—'
 }
 
+export function formatDateShort(value: string): string {
+  const date = parseDateValue(value)
+  return date ? format(date, 'dd.MM.yyyy') : '—'
+}
+
+export function formatDateRange(from: string, to: string): string {
+  return `${formatDateShort(from)} — ${formatDateShort(to)}`
+}
+
 export function dayKey(value: string): string {
   const date = parseDateValue(value)
   return date ? format(date, 'yyyy-MM-dd') : value

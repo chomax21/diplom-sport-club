@@ -118,22 +118,30 @@ const router = createRouter({
         {
           path: 'memberships',
           name: 'memberships',
-          component: PlaceholderView,
+          component: () => import('@/views/app/MembershipsView.vue'),
           meta: {
             title: 'Абонементы',
             description: 'Виды абонементов, оформление, продление и отмена.',
-            stage: 'F5',
             roles: ['admin', 'client'],
+          },
+        },
+        {
+          path: 'membership-types',
+          name: 'membership-types',
+          component: () => import('@/views/app/MembershipTypesView.vue'),
+          meta: {
+            title: 'Виды абонементов',
+            description: 'Каталог, стоимость и условия абонементов клуба.',
+            roles: ['admin'],
           },
         },
         {
           path: 'payments',
           name: 'payments',
-          component: PlaceholderView,
+          component: () => import('@/views/app/PaymentsView.vue'),
           meta: {
             title: 'Платежи',
             description: 'История платежей, статусы, возвраты и детали операций.',
-            stage: 'F5',
             roles: ['admin', 'client'],
           },
         },

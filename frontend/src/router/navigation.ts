@@ -5,6 +5,7 @@ import {
   CreditCard,
   Dumbbell,
   LayoutDashboard,
+  Tags,
   UserCog,
   Users,
   Wallet,
@@ -69,6 +70,12 @@ export const navigation: NavSection[] = [
         to: '/app/memberships',
         icon: CreditCard,
         roles: ['admin', 'client'],
+      },
+      {
+        label: 'Виды абонементов',
+        to: '/app/membership-types',
+        icon: Tags,
+        roles: ['admin'],
       },
       {
         label: 'Платежи',

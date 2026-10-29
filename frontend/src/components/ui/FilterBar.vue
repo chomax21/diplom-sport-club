@@ -9,7 +9,7 @@ const props = withDefaults(
   defineProps<{
     activeCount?: number
     hasActiveFilters?: boolean
-    columns?: 2 | 3 | 4
+    columns?: 1 | 2 | 3 | 4
   }>(),
   {
     activeCount: 0,
@@ -26,6 +26,9 @@ const open = ref(false)
 const panelId = `filters-${useId()}`
 
 const gridClasses = computed(() => {
+  if (props.columns === 1) {
+    return 'lg:grid-cols-1'
+  }
   if (props.columns === 2) {
     return 'lg:grid-cols-2'
   }
