@@ -7,7 +7,6 @@ import LoginView from '@/views/LoginView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import DashboardView from '@/views/app/DashboardView.vue'
-import PlaceholderView from '@/views/app/PlaceholderView.vue'
 import ProfileView from '@/views/app/ProfileView.vue'
 import { installAuthGuards } from './guards'
 
@@ -155,11 +154,10 @@ const router = createRouter({
         {
           path: 'reports',
           name: 'reports',
-          component: PlaceholderView,
+          component: () => import('@/views/app/ReportsView.vue'),
           meta: {
             title: 'Отчёты',
             description: 'Посещаемость, выручка и сводная статистика клуба.',
-            stage: 'F7',
             roles: ['admin', 'trainer'],
           },
         },
