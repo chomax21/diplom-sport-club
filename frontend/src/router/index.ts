@@ -85,33 +85,30 @@ const router = createRouter({
         {
           path: 'clients',
           name: 'clients',
-          component: PlaceholderView,
+          component: () => import('@/views/app/ClientsView.vue'),
           meta: {
             title: 'Клиенты',
             description: 'Список клиентов, профили, поиск и редактирование данных.',
-            stage: 'F6',
             roles: ['admin', 'trainer'],
           },
         },
         {
           path: 'trainers',
           name: 'trainers',
-          component: PlaceholderView,
+          component: () => import('@/views/app/TrainersView.vue'),
           meta: {
             title: 'Тренеры',
             description: 'Профили тренеров, специализация и управление расписанием.',
-            stage: 'F6',
             roles: ['admin'],
           },
         },
         {
           path: 'rooms',
           name: 'rooms',
-          component: PlaceholderView,
+          component: () => import('@/views/app/RoomsView.vue'),
           meta: {
             title: 'Залы',
             description: 'Помещения клуба, вместимость и доступность для тренировок.',
-            stage: 'F6',
             roles: ['admin'],
           },
         },
@@ -148,11 +145,10 @@ const router = createRouter({
         {
           path: 'users',
           name: 'users',
-          component: PlaceholderView,
+          component: () => import('@/views/app/UsersView.vue'),
           meta: {
             title: 'Пользователи',
             description: 'Учётные записи, роли и блокировка доступа.',
-            stage: 'F6',
             roles: ['admin'],
           },
         },
