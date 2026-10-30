@@ -46,31 +46,51 @@ REST API и адаптивный SPA-интерфейс для информац�
 
 ## Быстрый старт (Docker)
 
+Для запуска нужны только Docker Engine и Compose plugin. `docker compose up`
+поднимает PostgreSQL, API, frontend и автоматически применяет миграции и
+демо-данные.
+
 ```bash
+# .env не обязателен: compose использует значения по умолчанию.
+# Скопируйте шаблон, если нужно изменить порты или SECRET_KEY.
 cp .env.example .env
-# при необходимости замените SECRET_KEY: openssl rand -hex 32
+
 docker compose up -d --build
-docker compose exec backend python -m app.seed
 ```
 
-Миграции применяются автоматически при старте контейнера
-(`alembic upgrade head` в команде сервиса `backend`).
+После сборки приложение доступно по адресу **http://localhost:5173**.
+Frontend-контейнер раздаёт SPA через nginx и проксирует `/api/` и `/health`
+на backend, поэтому браузеру не нужен отдельный адрес API.
+
+Миграции и seed выполняются в команде сервиса `backend` при каждом старте.
+Seed идемпотентен; при необходимости его можно запустить повторно:
+
+```bash
+docker compose exec backend python -m app.seed
+```
 
 Проверка работоспособности:
 
 ```bash
 curl http://localhost:8000/health
 # {"status":"ok","database":"ok","version":"1.0.0"}
+
+curl http://localhost:5173/health
+# тот же ответ через nginx
 ```
 
 Сервисы:
 
+- Frontend — http://localhost:5173
 - API — http://localhost:8000
 - Swagger UI — http://localhost:8000/docs
 - ReDoc — http://localhost:8000/redoc
 - OpenAPI — http://localhost:8000/openapi.json
 - Adminer (профиль `tools`) — `docker compose --profile tools up -d`, затем
   http://localhost:8080
+
+Порты можно изменить в `.env`: `FRONTEND_PORT`, `BACKEND_PORT`,
+`POSTGRES_PORT`, `ADMINER_PORT`.
 
 Остановка:
 
@@ -265,6 +285,8 @@ PostgreSQL. Покрыты сценарии аутентификации и ро
 │   │   ├── stores/                 # Pinia: auth и toasts
 │   │   ├── views/                  # landing, вход, панель, расписание и UI-кит
 │   │   └── assets/                 # Tailwind и дизайн-токены
+│   ├── Dockerfile                  # production-сборка frontend
+│   ├── nginx.conf                  # статика и прокси API
 │   ├── .env.example                # VITE_API_URL
 │   ├── README.md
 │   └── package.json
@@ -288,7 +310,7 @@ PostgreSQL. Покрыты сценарии аутентификации и ро
 
 ## Frontend
 
-Адаптивный SPA на Vue 3 + TypeScript + Vite. Завершены этапы F0–F8:
+Адаптивный SPA на Vue 3 + TypeScript + Vite. Завершены этапы F0–F9:
 layout и навигация, API-клиент с обработкой ошибок, TanStack Query,
 toast-уведомления, вход и регистрация, восстановление сессии, автоматическое
 обновление токена и ролевые guard'ы. Добавлен UI-кит и рабочий раздел
@@ -306,6 +328,11 @@ toast-уведомления, вход и регистрация, восстан
 (axe-core — 0 нарушений), поддерживает клавиатурную навигацию, skip-link,
 возврат фокуса из модальных окон и `prefers-reduced-motion`. Lighthouse
 accessibility — 100 для страницы входа, дашборда и отчётов.
+
+Для показа или тестирования достаточно выполнить `docker compose up -d
+--build`: PostgreSQL, API и собранный frontend запустятся вместе, миграции и
+демо-данные применятся автоматически. Nginx раздаёт SPA и проксирует API,
+поэтому приложение открывается по одному адресу.
 
 После запуска доступны демо-аккаунты из раздела «Демо-данные»; меню и
 маршруты автоматически ограничиваются ролью пользователя. Расписание

@@ -56,20 +56,18 @@
 
 ## Быстрый запуск
 
-```bash
-cp .env.example .env
-docker compose up -d --build
-docker compose exec backend python -m app.seed
+Нужны Docker Engine и Compose plugin. `.env` не обязателен.
 
-cd frontend
-npm install
-cp .env.example .env
-npm run dev
+```bash
+docker compose up -d --build
 ```
 
+При старте применяются миграции и автоматически загружаются демо-данные.
+Frontend собирается Vite и раздаётся nginx, который также проксирует API.
+
+- Frontend: http://localhost:5173
 - API: http://localhost:8000
 - Swagger: http://localhost:8000/docs
-- Frontend: http://localhost:5173
 
 Демо-аккаунты:
 
@@ -81,8 +79,8 @@ npm run dev
 
 ## Состояние проекта
 
-- этапы F0–F8 завершены; F9 в работе: документация готова, остались тесты, Docker и финальная проверка;
-- backend: 16 pytest-тестов, frontend: 45 Vitest-тестов;
+- этапы F0–F9 завершены; полный стек запускается одной командой через Docker Compose;
+- backend: 16 pytest-тестов, frontend: 45 базовых Vitest-тестов;
 - `build`, `lint` и `format:check` проходят;
 - axe-core: 0 нарушений WCAG 2.1/2.2 AA;
 - Lighthouse accessibility: 100 для `/login`, `/app` и `/app/reports`;

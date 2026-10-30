@@ -69,7 +69,8 @@
 
 ### Инфраструктура
 
-- Docker Compose для PostgreSQL и backend;
+- Docker Compose для PostgreSQL, backend и frontend;
+- nginx для раздачи SPA и проксирования `/api/` и `/health`;
 - Adminer как опциональный инструмент просмотра БД;
 - Git и GitHub;
 - npm для фронтенда.
@@ -97,6 +98,10 @@ FastAPI
                     ▼
 PostgreSQL 16
 ```
+
+В Docker Compose перед FastAPI стоит nginx: он раздаёт собранное SPA и
+проксирует запросы `/api/` и `/health` на backend. Поэтому браузер работает
+с одним origin, а CORS для frontend-контейнера не требуется.
 
 ### Слои backend
 
@@ -431,20 +436,33 @@ Access-токен хранится в памяти, refresh-токен — в `l
 
 ### Быстрый старт через Docker
 
+Нужны только Docker Engine и Compose plugin. Файл `.env` не обязателен:
+compose использует значения по умолчанию.
+
 ```bash
-cp .env.example .env
 docker compose up -d --build
-docker compose exec backend python -m app.seed
 ```
 
-Сервисы:
+При старте backend автоматически применяет миграции и идемпотентно загружает
+демо-данные. После сборки открывается всё приложение:
 
+- Frontend — http://localhost:5173
 - API — http://localhost:8000
 - Swagger UI — http://localhost:8000/docs
 - PostgreSQL — localhost:5433
 - Adminer — `docker compose --profile tools up -d`, затем http://localhost:8080
 
-### Frontend
+Frontend-контейнер собирается в `frontend/Dockerfile`: Vite создаёт статику,
+nginx раздаёт её и проксирует `/api/` и `/health` на backend.
+
+Порты задаются в `.env`: `FRONTEND_PORT`, `BACKEND_PORT`, `POSTGRES_PORT`,
+`ADMINER_PORT`. Для повторной загрузки демо-данных:
+
+```bash
+docker compose exec backend python -m app.seed
+```
+
+### Локальная разработка frontend
 
 ```bash
 cd frontend
@@ -504,6 +522,8 @@ npm run format:check
 │   │   ├── stores/                 # Pinia
 │   │   ├── views/                  # страницы
 │   │   └── assets/                 # Tailwind и токены
+│   ├── Dockerfile                  # production-сборка frontend
+│   ├── nginx.conf                  # статика и прокси API
 │   └── README.md
 ├── docs/
 │   ├── DETAILED.md                 # этот документ
@@ -526,7 +546,7 @@ npm run format:check
 | F6   | Клиенты, тренеры, залы и пользователи                       |
 | F7   | Ролевые дашборды и отчёты                                   |
 | F8   | Аудит адаптивности и доступности                            |
-| F9   | Тесты, Docker, документация и финальная проверка            |
+| F9   | Docker Compose, документация и финальная проверка           |
 
 Подробный журнал с критериями готовности и принятыми решениями находится в
 [ROADMAP.md](../ROADMAP.md).
@@ -535,12 +555,11 @@ npm run format:check
 
 - подключение реального платёжного провайдера вместо mock;
 - email- и SMS-уведомления о записи, отмене и оплате;
-- production-сборка frontend в Docker с nginx;
-- GitHub Actions для lint, test и build;
 - расширение отчётов и экспорт в Excel;
 - несколько клубов или филиалов;
 - журнал аудита действий администраторов;
-- более гибкое управление ролями и правами.
+- более гибкое управление ролями и правами;
+- CI/CD и расширенное тестовое покрытие — вне текущего объёма.
 
 ## 15. Связанные документы
 

@@ -26,6 +26,21 @@ npm run dev
 `http://localhost:8000/api/v1`; если `.env` не создан, используется это же
 значение.
 
+## Docker
+
+Production-сборка frontend выполняется в `frontend/Dockerfile`: Vite собирает
+статику, nginx раздаёт её и проксирует `/api/` и `/health` на backend.
+
+```bash
+cd ..
+docker compose up -d --build
+```
+
+Приложение откроется на http://localhost:5173. Порт задаётся переменной
+`FRONTEND_PORT` в корневом `.env`. API внутри контейнера доступен по
+относительному адресу `/api/v1`, поэтому отдельная настройка CORS для
+браузера не требуется.
+
 ## Что уже реализовано
 
 - Адаптивный layout: sidebar на десктопе, drawer на мобильных.
