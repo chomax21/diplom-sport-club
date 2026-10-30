@@ -427,12 +427,14 @@ function goToTypes(): void {
       <p class="font-semibold text-slate-700">Как это работает</p>
       <p class="mt-1">
         Абонемент начинает действовать с даты оформления. Отмена обнуляет остаток посещений, но не
-        возвращает платёж — возврат оформляется администратором в
-        <RouterLink to="/app/payments" class="font-semibold text-brand-700 underline">
-          разделе «Платежи»
-        </RouterLink>
-        .
+        возвращает платёж — возврат оформляет администратор.
       </p>
+      <RouterLink
+        to="/app/payments"
+        class="mt-1 inline-flex min-h-11 items-center font-semibold text-brand-700 underline"
+      >
+        Перейти в раздел «Платежи»
+      </RouterLink>
     </div>
 
     <PurchaseMembershipModal

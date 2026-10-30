@@ -36,8 +36,9 @@ async function logout(): Promise<void> {
   <header class="sticky top-0 z-20 border-b border-slate-200 bg-white/85 backdrop-blur">
     <div class="flex h-16 items-center gap-3 px-4 sm:px-6 lg:px-8">
       <button
+        id="mobile-menu-trigger"
         type="button"
-        class="grid size-10 shrink-0 place-items-center rounded-xl border border-slate-200 text-slate-600 transition hover:bg-slate-100 lg:hidden"
+        class="grid size-11 shrink-0 place-items-center rounded-xl border border-slate-200 text-slate-600 transition hover:bg-slate-100 lg:hidden"
         aria-label="Открыть меню навигации"
         @click="emit('openMenu')"
       >
@@ -57,9 +58,9 @@ async function logout(): Promise<void> {
 
       <HeadlessMenu as="div" class="relative shrink-0">
         <MenuButton
-          class="flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-2 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-          aria-label="Меню профиля"
+          class="flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-2 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
         >
+          <span class="sr-only">Меню профиля</span>
           <span
             class="grid size-7 shrink-0 place-items-center rounded-full bg-brand-50 text-[11px] font-bold text-brand-700"
           >
@@ -99,7 +100,7 @@ async function logout(): Promise<void> {
               <RouterLink
                 to="/app/profile"
                 :class="[
-                  'mt-1 flex min-h-10 items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700',
+                  'mt-1 flex min-h-11 items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700',
                   active ? 'bg-slate-100' : '',
                 ]"
               >
@@ -112,7 +113,7 @@ async function logout(): Promise<void> {
               <button
                 type="button"
                 :class="[
-                  'flex min-h-10 w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-rose-600',
+                  'flex min-h-11 w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-rose-600',
                   active ? 'bg-rose-50' : '',
                 ]"
                 @click="logout"

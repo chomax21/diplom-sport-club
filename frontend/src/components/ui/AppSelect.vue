@@ -44,7 +44,7 @@ const describedBy = computed(() => {
 const classes = computed(() =>
   cn(
     'block w-full appearance-none rounded-control border bg-white pl-3.5 pr-10 text-sm text-slate-900 shadow-sm outline-none transition disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500',
-    props.size === 'sm' ? 'min-h-10 py-2' : 'min-h-11 py-2.5',
+    props.size === 'sm' ? 'min-h-11 py-2' : 'min-h-11 py-2.5',
     props.error
       ? 'border-rose-300 focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10'
       : 'border-slate-300 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10',

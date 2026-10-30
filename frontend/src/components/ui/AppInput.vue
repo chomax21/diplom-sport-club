@@ -51,9 +51,9 @@ const describedBy = computed(() => {
 const classes = computed(() =>
   cn(
     'block w-full rounded-control border bg-white text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500',
-    props.size === 'sm' ? 'min-h-10 py-2' : 'min-h-11 py-2.5',
-    hasPrefix.value ? 'pl-10' : 'pl-3.5',
-    hasSuffix.value ? 'pr-10' : 'pr-3.5',
+    props.size === 'sm' ? 'min-h-11 py-2' : 'min-h-11 py-2.5',
+    hasPrefix.value ? 'pl-11' : 'pl-3.5',
+    hasSuffix.value ? 'pr-11' : 'pr-3.5',
     props.error
       ? 'border-rose-300 focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10'
       : 'border-slate-300 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10',
@@ -71,7 +71,7 @@ const classes = computed(() =>
     <div class="relative">
       <span
         v-if="hasPrefix"
-        class="pointer-events-none absolute inset-y-0 left-0 grid w-10 place-items-center text-slate-400"
+        class="pointer-events-none absolute inset-y-0 left-0 grid w-11 place-items-center text-slate-400"
       >
         <slot name="prefix" />
       </span>
@@ -92,7 +92,7 @@ const classes = computed(() =>
         :aria-describedby="describedBy"
       />
 
-      <span v-if="hasSuffix" class="absolute inset-y-0 right-0 grid w-10 place-items-center">
+      <span v-if="hasSuffix" class="absolute inset-y-0 right-0 grid w-11 place-items-center">
         <slot name="suffix" />
       </span>
     </div>

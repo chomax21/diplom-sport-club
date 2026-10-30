@@ -89,7 +89,7 @@ const chartOptions = computed<ChartOptions<'bar'>>(() => ({
 </script>
 
 <template>
-  <div :class="heightClass" role="img" :aria-label="ariaLabel">
-    <Bar :data="chartData" :options="chartOptions" />
+  <div :class="heightClass">
+    <Bar :data="chartData" :options="chartOptions" role="img" :aria-label="ariaLabel" />
   </div>
 </template>

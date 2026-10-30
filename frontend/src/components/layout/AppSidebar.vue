@@ -59,7 +59,7 @@ async function logout(): Promise<void> {
         mobile ? 'pl-4 pr-14' : 'px-4',
       ]"
     >
-      <RouterLink to="/app" class="flex min-w-0 items-center gap-3" aria-label="На дашборд">
+      <RouterLink to="/app" class="flex min-h-11 min-w-0 items-center gap-3">
         <span
           class="grid size-9 shrink-0 place-items-center rounded-xl bg-brand-600 text-white shadow-lg shadow-brand-600/20"
         >
@@ -89,6 +89,7 @@ async function logout(): Promise<void> {
                   ? 'bg-brand-50 text-brand-700'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
               ]"
+              :aria-current="isActive(item) ? 'page' : undefined"
             >
               <component
                 :is="item.icon"
@@ -108,8 +109,8 @@ async function logout(): Promise<void> {
       <RouterLink
         to="/app/profile"
         class="flex min-h-11 items-center gap-3 rounded-2xl bg-slate-50 p-3 transition hover:bg-slate-100"
-        aria-label="Открыть профиль"
       >
+        <span class="sr-only">Открыть профиль</span>
         <span
           class="grid size-9 shrink-0 place-items-center rounded-full bg-white text-xs font-bold text-brand-700 shadow-sm"
         >
@@ -133,7 +134,7 @@ async function logout(): Promise<void> {
 
       <button
         type="button"
-        class="mt-2 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700"
+        class="mt-2 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700"
         @click="logout"
       >
         <LogOut :size="14" aria-hidden="true" />

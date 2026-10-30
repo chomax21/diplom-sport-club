@@ -1,10 +1,37 @@
 <script setup lang="ts">
-import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
+import {
+  Dialog,
+  DialogDescription,
+  DialogPanel,
+  DialogTitle,
+  TransitionChild,
+  TransitionRoot,
+} from '@headlessui/vue'
 import { X } from '@lucide/vue'
+import { watch } from 'vue'
 
 import IconButton from './IconButton.vue'
 
 const open = defineModel<boolean>({ default: false })
+
+let previousFocus: HTMLElement | null = null
+
+watch(open, (isOpen) => {
+  if (isOpen) {
+    previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null
+  }
+})
+
+function restoreFocus(): void {
+  const target = previousFocus
+  previousFocus = null
+
+  if (!target?.isConnected) {
+    return
+  }
+
+  window.setTimeout(() => target.focus({ preventScroll: true }), 0)
+}
 
 const props = withDefaults(
   defineProps<{
@@ -33,7 +60,7 @@ function handleClose(): void {
 </script>
 
 <template>
-  <TransitionRoot as="template" :show="open">
+  <TransitionRoot as="template" :show="open" @after-leave="restoreFocus">
     <Dialog as="div" class="fixed inset-0 z-50" @close="handleClose">
       <TransitionChild
         as="template"
@@ -71,9 +98,12 @@ function handleClose(): void {
                   <DialogTitle class="text-lg font-semibold text-slate-900">
                     {{ title }}
                   </DialogTitle>
-                  <p v-if="description" class="mt-1 text-sm leading-5 text-slate-500">
+                  <DialogDescription
+                    v-if="description"
+                    class="mt-1 text-sm leading-5 text-slate-500"
+                  >
                     {{ description }}
-                  </p>
+                  </DialogDescription>
                 </div>
                 <IconButton label="Закрыть окно" variant="ghost" @click="open = false">
                   <X :size="18" aria-hidden="true" />

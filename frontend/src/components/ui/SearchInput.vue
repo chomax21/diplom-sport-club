@@ -37,7 +37,7 @@ withDefaults(
       <button
         v-if="model"
         type="button"
-        class="grid size-9 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
+        class="grid size-11 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
         aria-label="Очистить поиск"
         :disabled="disabled"
         @click="model = ''"

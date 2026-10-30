@@ -53,14 +53,14 @@ const tooltip = computed(() => {
   <button
     type="button"
     :class="[
-      'inline-flex min-h-9 shrink-0 items-center gap-2 rounded-full border px-2.5 py-1.5 text-xs font-medium transition',
+      'inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition',
       tone,
     ]"
     :title="tooltip"
-    :aria-label="tooltip"
     @click="refetch()"
   >
     <component :is="icon" :size="14" :class="isFetching ? 'animate-spin' : ''" aria-hidden="true" />
-    <span class="hidden sm:inline">{{ label }}</span>
+    <span class="sr-only">{{ label }}. {{ tooltip }}</span>
+    <span class="hidden sm:inline" aria-hidden="true">{{ label }}</span>
   </button>
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { X } from '@lucide/vue'
-import { ref, watch } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 
 import AppHeader from '@/components/layout/AppHeader.vue'
@@ -9,25 +9,73 @@ import AppSidebar from '@/components/layout/AppSidebar.vue'
 
 const route = useRoute()
 const mobileMenuOpen = ref(false)
+const restoreMenuFocus = ref(false)
+const pendingMainFocus = ref(false)
+
+function focusMainContent(): void {
+  window.setTimeout(() => {
+    document.getElementById('main-content')?.focus({ preventScroll: true })
+  }, 0)
+}
+
+function closeMobileMenu(): void {
+  restoreMenuFocus.value = true
+  mobileMenuOpen.value = false
+}
+
+function handleMenuAfterLeave(): void {
+  if (pendingMainFocus.value) {
+    pendingMainFocus.value = false
+    restoreMenuFocus.value = false
+    focusMainContent()
+    return
+  }
+
+  if (!restoreMenuFocus.value) {
+    return
+  }
+
+  restoreMenuFocus.value = false
+  window.setTimeout(() => {
+    document.getElementById('mobile-menu-trigger')?.focus({ preventScroll: true })
+  }, 0)
+}
 
 watch(
   () => route.fullPath,
-  () => {
+  async () => {
+    const hadOpenMenu = mobileMenuOpen.value
+    restoreMenuFocus.value = false
     mobileMenuOpen.value = false
+
+    if (hadOpenMenu) {
+      pendingMainFocus.value = true
+      return
+    }
+
+    await nextTick()
+    focusMainContent()
   },
 )
 </script>
 
 <template>
   <div class="min-h-dvh bg-slate-50">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-xl focus:bg-white focus:px-4 focus:py-3 focus:text-sm focus:font-semibold focus:text-brand-700 focus:shadow-card"
+    >
+      Перейти к содержимому
+    </a>
+
     <aside
       class="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-slate-200 bg-white lg:block"
     >
       <AppSidebar />
     </aside>
 
-    <TransitionRoot as="template" :show="mobileMenuOpen">
-      <Dialog as="div" class="relative z-50 lg:hidden" @close="mobileMenuOpen = false">
+    <TransitionRoot as="template" :show="mobileMenuOpen" @after-leave="handleMenuAfterLeave">
+      <Dialog as="div" class="relative z-50 lg:hidden" @close="closeMobileMenu">
         <TransitionChild
           as="template"
           enter="transition-opacity ease-linear duration-200"
@@ -56,9 +104,9 @@ watch(
               <DialogTitle class="sr-only">Меню навигации</DialogTitle>
               <button
                 type="button"
-                class="absolute right-3 top-3 z-10 grid size-9 place-items-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+                class="absolute right-2 top-2 z-10 grid size-11 place-items-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
                 aria-label="Закрыть меню"
-                @click="mobileMenuOpen = false"
+                @click="closeMobileMenu"
               >
                 <X :size="17" aria-hidden="true" />
               </button>
@@ -71,7 +119,11 @@ watch(
 
     <div class="lg:pl-64">
       <AppHeader @open-menu="mobileMenuOpen = true" />
-      <main class="mx-auto w-full max-w-7xl px-4 pb-12 pt-6 sm:px-6 lg:px-8">
+      <main
+        id="main-content"
+        tabindex="-1"
+        class="mx-auto w-full max-w-7xl scroll-mt-20 px-4 pb-12 pt-6 focus:outline-none sm:px-6 lg:px-8"
+      >
         <RouterView />
       </main>
     </div>

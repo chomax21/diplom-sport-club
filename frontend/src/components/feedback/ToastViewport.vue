@@ -63,7 +63,7 @@ const tones: Record<ToastType, { container: string; icon: string }> = {
         </div>
         <button
           type="button"
-          class="-m-1 grid size-8 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-white/70 hover:text-slate-700"
+          class="-m-1 grid size-11 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-white/70 hover:text-slate-700"
           aria-label="Закрыть уведомление"
           @click="toastStore.remove(toast.id)"
         >

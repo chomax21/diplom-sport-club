@@ -400,7 +400,7 @@ const visibleQuickLinks = computed(() => quickLinks.filter((link) => auth.hasRol
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div class="rounded-2xl bg-brand-50 p-3.5">
-                <p class="text-xs text-brand-700/80">Остаток</p>
+                <p class="text-xs text-brand-800">Остаток</p>
                 <p class="mt-1 text-lg font-bold text-brand-900">
                   {{ visitsLeftLabel(activeMembership.visits_left) }}
                 </p>
@@ -431,7 +431,7 @@ const visibleQuickLinks = computed(() => quickLinks.filter((link) => auth.hasRol
             <template #actions>
               <RouterLink
                 to="/app/memberships"
-                class="inline-flex min-h-10 items-center rounded-control bg-brand-600 px-4 text-sm font-semibold text-white hover:bg-brand-700"
+                class="inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 text-sm font-semibold text-white hover:bg-brand-700"
               >
                 Перейти в каталог
               </RouterLink>
@@ -493,7 +493,7 @@ const visibleQuickLinks = computed(() => quickLinks.filter((link) => auth.hasRol
             <template #actions>
               <RouterLink
                 to="/app/schedule"
-                class="inline-flex min-h-10 items-center rounded-control bg-brand-600 px-4 text-sm font-semibold text-white hover:bg-brand-700"
+                class="inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 text-sm font-semibold text-white hover:bg-brand-700"
               >
                 Открыть расписание
               </RouterLink>
@@ -537,7 +537,7 @@ const visibleQuickLinks = computed(() => quickLinks.filter((link) => auth.hasRol
           </div>
           <RouterLink
             to="/app/schedule"
-            class="inline-flex min-h-10 items-center gap-1.5 text-sm font-semibold text-brand-700 hover:text-brand-800"
+            class="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-brand-700 hover:text-brand-800"
           >
             Всё расписание
             <ArrowRight :size="15" aria-hidden="true" />
@@ -558,7 +558,7 @@ const visibleQuickLinks = computed(() => quickLinks.filter((link) => auth.hasRol
           <template #actions>
             <RouterLink
               to="/app/schedule"
-              class="inline-flex min-h-10 items-center rounded-control bg-brand-600 px-4 text-sm font-semibold text-white hover:bg-brand-700"
+              class="inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 text-sm font-semibold text-white hover:bg-brand-700"
             >
               Открыть расписание
             </RouterLink>
@@ -627,7 +627,7 @@ const visibleQuickLinks = computed(() => quickLinks.filter((link) => auth.hasRol
           </div>
           <RouterLink
             to="/app/reports"
-            class="inline-flex min-h-10 items-center gap-1.5 text-sm font-semibold text-brand-700 hover:text-brand-800"
+            class="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-brand-700 hover:text-brand-800"
           >
             Открыть отчёты
             <ArrowRight :size="15" aria-hidden="true" />
@@ -648,7 +648,7 @@ const visibleQuickLinks = computed(() => quickLinks.filter((link) => auth.hasRol
           <template #actions>
             <RouterLink
               to="/app/schedule"
-              class="inline-flex min-h-10 items-center rounded-control bg-brand-600 px-4 text-sm font-semibold text-white hover:bg-brand-700"
+              class="inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 text-sm font-semibold text-white hover:bg-brand-700"
             >
               Открыть расписание
             </RouterLink>

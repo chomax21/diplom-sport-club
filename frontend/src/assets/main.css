@@ -8,16 +8,19 @@
   --color-brand-200: #a7f3d0;
   --color-brand-300: #6ee7b7;
   --color-brand-400: #34d399;
-  --color-brand-500: #10b981;
-  --color-brand-600: #059669;
-  --color-brand-700: #047857;
-  --color-brand-800: #065f46;
-  --color-brand-900: #064e3b;
-  --color-brand-950: #022c22;
+  --color-brand-500: #059669;
+  --color-brand-600: #047857;
+  --color-brand-700: #065f46;
+  --color-brand-800: #064e3b;
+  --color-brand-900: #022c22;
+  --color-brand-950: #011a14;
 
   --color-accent-400: #fbbf24;
   --color-accent-500: #f59e0b;
   --color-accent-600: #d97706;
+
+  /* Более тёмный оттенок для мелких подписей: 4.76:1 на белом. */
+  --color-slate-400: #64748b;
 
   --radius-control: 0.75rem;
   --radius-panel: 1rem;
@@ -51,5 +54,21 @@
   /* Плавающий виджет Vue DevTools; сам плагин остаётся доступен по Alt+Shift+D. */
   .vue-devtools__anchor {
     display: none !important;
+  }
+}
+
+/* Уважаем системную настройку уменьшения движения. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

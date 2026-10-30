@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BarChart3, Wallet } from '@lucide/vue'
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 
 import type { AttendanceReportParams, ReportPeriodParams } from '@/api/reports'
 import { AppBadge, AppSelect, DateRangePicker } from '@/components/ui'
@@ -11,6 +11,8 @@ import { addDaysDateInput, todayDateInput } from '@/lib/datetime'
 import { useAuthStore } from '@/stores/auth'
 
 type ReportTab = 'attendance' | 'revenue'
+
+const reportTabs: ReportTab[] = ['attendance', 'revenue']
 
 const auth = useAuthStore()
 const isAdmin = computed(() => auth.role === 'admin')
@@ -49,6 +51,33 @@ const revenueParams = computed<ReportPeriodParams>(() => ({
 
 const attendanceEnabled = computed(() => activeTab.value === 'attendance')
 const revenueEnabled = computed(() => isAdmin.value && activeTab.value === 'revenue')
+
+function selectTab(tab: ReportTab, focus = false): void {
+  activeTab.value = tab
+  if (focus) {
+    void nextTick(() => document.getElementById(`report-tab-${tab}`)?.focus())
+  }
+}
+
+function onTabKeydown(event: KeyboardEvent, tab: ReportTab): void {
+  const index = reportTabs.indexOf(tab)
+  let next: ReportTab | undefined
+
+  if (event.key === 'ArrowRight') {
+    next = reportTabs[(index + 1) % reportTabs.length]
+  } else if (event.key === 'ArrowLeft') {
+    next = reportTabs[(index - 1 + reportTabs.length) % reportTabs.length]
+  } else if (event.key === 'Home') {
+    next = reportTabs[0]
+  } else if (event.key === 'End') {
+    next = reportTabs[reportTabs.length - 1]
+  }
+
+  if (next) {
+    event.preventDefault()
+    selectTab(next, true)
+  }
+}
 </script>
 
 <template>
@@ -68,11 +97,19 @@ const revenueEnabled = computed(() => isAdmin.value && activeTab.value === 'reve
       <AppBadge v-if="isTrainer" tone="info">Только ваши тренировки</AppBadge>
     </section>
 
-    <div v-if="isAdmin" class="flex flex-wrap gap-2" role="tablist" aria-label="Тип отчёта">
+    <div
+      v-if="isAdmin"
+      class="flex flex-wrap gap-2"
+      role="tablist"
+      aria-label="Тип отчёта"
+      aria-orientation="horizontal"
+    >
       <button
+        id="report-tab-attendance"
         type="button"
         role="tab"
         :aria-selected="activeTab === 'attendance'"
+        :tabindex="activeTab === 'attendance' ? 0 : -1"
         aria-controls="report-panel"
         :class="[
           'inline-flex min-h-11 items-center gap-2 rounded-control px-4 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
@@ -80,15 +117,18 @@ const revenueEnabled = computed(() => isAdmin.value && activeTab.value === 'reve
             ? 'bg-brand-600 text-white shadow-sm'
             : 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50',
         ]"
-        @click="activeTab = 'attendance'"
+        @click="selectTab('attendance')"
+        @keydown="onTabKeydown($event, 'attendance')"
       >
         <BarChart3 :size="16" aria-hidden="true" />
         Посещаемость
       </button>
       <button
+        id="report-tab-revenue"
         type="button"
         role="tab"
         :aria-selected="activeTab === 'revenue'"
+        :tabindex="activeTab === 'revenue' ? 0 : -1"
         aria-controls="report-panel"
         :class="[
           'inline-flex min-h-11 items-center gap-2 rounded-control px-4 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
@@ -96,7 +136,8 @@ const revenueEnabled = computed(() => isAdmin.value && activeTab.value === 'reve
             ? 'bg-brand-600 text-white shadow-sm'
             : 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50',
         ]"
-        @click="activeTab = 'revenue'"
+        @click="selectTab('revenue')"
+        @keydown="onTabKeydown($event, 'revenue')"
       >
         <Wallet :size="16" aria-hidden="true" />
         Выручка
@@ -134,7 +175,13 @@ const revenueEnabled = computed(() => isAdmin.value && activeTab.value === 'reve
       посещаемость его собственными тренировками.
     </div>
 
-    <div id="report-panel" role="tabpanel">
+    <div
+      id="report-panel"
+      :role="isAdmin ? 'tabpanel' : undefined"
+      :aria-labelledby="isAdmin ? `report-tab-${activeTab}` : undefined"
+      :tabindex="isAdmin ? 0 : undefined"
+      class="focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-500"
+    >
       <AttendanceReportPanel
         v-if="activeTab === 'attendance'"
         :params="attendanceParams"

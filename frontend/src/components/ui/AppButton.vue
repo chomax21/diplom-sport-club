@@ -39,9 +39,9 @@ const variantClasses: Record<ButtonVariant, string> = {
 }
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'min-h-11 rounded-control px-3 text-xs',
-  md: 'min-h-11 rounded-control px-4 text-sm',
-  lg: 'min-h-12 rounded-control px-5 text-sm',
+  sm: 'min-h-11 min-w-11 rounded-control px-3 text-xs',
+  md: 'min-h-11 min-w-11 rounded-control px-4 text-sm',
+  lg: 'min-h-12 min-w-12 rounded-control px-5 text-sm',
 }
 
 const classes = computed(() =>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CircleAlert, CreditCard, ShoppingCart, Wallet } from '@lucide/vue'
-import { computed, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 
 import { getApiErrorMessage } from '@/api/errors'
 import type { MembershipType, PaymentMethod } from '@/api/memberships'
@@ -58,6 +58,51 @@ const activeTypes = computed<MembershipType[]>(() =>
 const selectedType = computed<MembershipType | null>(
   () => activeTypes.value.find((item) => item.id === selectedTypeId.value) ?? null,
 )
+
+const typeGroup = ref<HTMLElement | null>(null)
+
+function typeTabIndex(index: number): number {
+  if (selectedTypeId.value) {
+    return activeTypes.value[index]?.id === selectedTypeId.value ? 0 : -1
+  }
+
+  return index === 0 ? 0 : -1
+}
+
+function selectType(index: number, focus = false): void {
+  const item = activeTypes.value[index]
+  if (!item) {
+    return
+  }
+
+  selectedTypeId.value = item.id
+
+  if (focus) {
+    void nextTick(() => {
+      typeGroup.value?.querySelectorAll<HTMLButtonElement>('[role="radio"]')[index]?.focus()
+    })
+  }
+}
+
+function onTypeKeydown(event: KeyboardEvent, index: number): void {
+  const last = activeTypes.value.length - 1
+  let next: number | undefined
+
+  if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+    next = index === last ? 0 : index + 1
+  } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+    next = index === 0 ? last : index - 1
+  } else if (event.key === 'Home') {
+    next = 0
+  } else if (event.key === 'End') {
+    next = last
+  }
+
+  if (next !== undefined) {
+    event.preventDefault()
+    selectType(next, true)
+  }
+}
 
 const clientOptions = computed(() =>
   (clientsQuery.data.value?.items ?? [])
@@ -172,23 +217,26 @@ async function submit(): Promise<void> {
 
         <div
           v-else
+          ref="typeGroup"
           class="mt-3 grid gap-2.5 sm:grid-cols-2"
           role="radiogroup"
-          aria-label="Вид абонемента"
+          aria-labelledby="purchase-type-heading"
         >
           <button
-            v-for="item in activeTypes"
+            v-for="(item, index) in activeTypes"
             :key="item.id"
             type="button"
             role="radio"
             :aria-checked="selectedTypeId === item.id"
+            :tabindex="typeTabIndex(index)"
             :class="[
               'min-w-0 rounded-2xl border p-3 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
               selectedTypeId === item.id
                 ? 'border-brand-500 bg-brand-50/70 ring-2 ring-brand-500/20'
                 : 'border-slate-200 bg-white hover:border-brand-200 hover:bg-slate-50',
             ]"
-            @click="selectedTypeId = item.id"
+            @click="selectType(index)"
+            @keydown="onTypeKeydown($event, index)"
           >
             <span class="flex items-start justify-between gap-2">
               <span class="min-w-0 text-sm font-semibold leading-5 text-slate-900">

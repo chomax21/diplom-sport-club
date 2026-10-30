@@ -39,6 +39,13 @@ const features = [
 
 <template>
   <div class="min-h-dvh bg-slate-50 lg:grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+    <a
+      href="#auth-main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-xl focus:bg-white focus:px-4 focus:py-3 focus:text-sm focus:font-semibold focus:text-brand-700 focus:shadow-card"
+    >
+      Перейти к содержимому
+    </a>
+
     <aside
       class="relative hidden overflow-hidden bg-slate-950 p-10 text-white lg:flex lg:flex-col lg:justify-between xl:p-14"
     >
@@ -51,7 +58,7 @@ const features = [
         aria-hidden="true"
       />
 
-      <RouterLink to="/" class="relative inline-flex items-center gap-3" aria-label="На главную">
+      <RouterLink to="/" class="relative inline-flex min-h-11 items-center gap-3">
         <span
           class="grid size-11 place-items-center rounded-2xl bg-brand-600 text-white shadow-lg shadow-brand-900/40"
         >
@@ -59,7 +66,7 @@ const features = [
         </span>
         <span>
           <span class="block text-sm font-semibold tracking-wide">СпортКлуб</span>
-          <span class="block text-xs text-slate-400">Информационная система</span>
+          <span class="block text-xs text-slate-300">Информационная система</span>
         </span>
       </RouterLink>
 
@@ -84,20 +91,24 @@ const features = [
             </span>
             <span>
               <span class="block text-sm font-medium text-white">{{ feature.title }}</span>
-              <span class="mt-0.5 block text-xs leading-5 text-slate-400">{{ feature.text }}</span>
+              <span class="mt-0.5 block text-xs leading-5 text-slate-300">{{ feature.text }}</span>
             </span>
           </li>
         </ul>
       </div>
 
-      <p class="relative text-xs text-slate-500">Дипломный проект · Vue 3 + TypeScript + FastAPI</p>
+      <p class="relative text-xs text-slate-300">Дипломный проект · Vue 3 + TypeScript + FastAPI</p>
     </aside>
 
-    <main class="flex min-h-dvh flex-col">
+    <main
+      id="auth-main"
+      tabindex="-1"
+      class="flex min-h-dvh flex-col scroll-mt-20 focus:outline-none"
+    >
       <div
         class="flex items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 py-3.5 sm:px-6 lg:hidden"
       >
-        <RouterLink to="/" class="flex min-w-0 items-center gap-2.5" aria-label="На главную">
+        <RouterLink to="/" class="flex min-h-11 min-w-0 items-center gap-2.5">
           <span class="grid size-9 shrink-0 place-items-center rounded-xl bg-brand-600 text-white">
             <Dumbbell :size="18" aria-hidden="true" />
           </span>
@@ -108,7 +119,7 @@ const features = [
         </RouterLink>
         <RouterLink
           to="/"
-          class="inline-flex min-h-10 shrink-0 items-center rounded-xl px-3 text-xs font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+          class="inline-flex min-h-11 shrink-0 items-center rounded-xl px-3 text-xs font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
         >
           На главную
         </RouterLink>
